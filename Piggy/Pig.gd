@@ -3,11 +3,21 @@ This script attached to the pig object is used to get input from
 the player, and then move the pig thanks to function process.
 """
 
+# Area2D is the parent with Sprite, Collision and AnimationPlayer.
 extends Area2D
 
 # Constant variable to be used within func _process, called by move(SPEED,SPEED)
 # I removed the const I put export so the var is available in Inspector.
-export(int) var SPEED = 50 
+export(int) var SPEED = 50
+
+# AnimationPlayer onready var for the pig.
+onready var animationPlayer : AnimationPlayer = $AnimationPlayer
+
+# Sprite onready var used to flip the direction of the pig when moving.
+onready var sprite : Sprite = $Sprite
+
+# Used in move() and _process() to set the animation Run to true or false.
+var moving = false
 
 """
 This function is used every frame. Gets input from the player and
@@ -21,17 +31,32 @@ that delta is never used in the function. We need to specify delta in case
 the computer processor is overloaded. Delta the time since the previous 
 frame, in real time can be different for us if the previous case happens.
 Delta will track the time.
+
+When the input received is left the sprite of the pig flips to face the 
+movement direction.
+
+When the move() is called, moving == true so in this function the
+the animation RUN is played. If moving == false the animation by default will be
+Idle.
 """
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	moving = false
 	if Input.is_action_pressed("ui_right"):
 		move(SPEED, 0, delta)
+		sprite.flip_h = false
 	if Input.is_action_pressed("ui_left"):
 		move(-SPEED, 0, delta)
+		sprite.flip_h = true
 	if Input.is_action_pressed("ui_up"):
 		move(0, -SPEED, delta)
 	if Input.is_action_pressed("ui_down"):
 		move(0, SPEED, delta)
+		
+	if moving == true:
+		animationPlayer.play("Run")
+	else:
+		animationPlayer.play("Idle")
 		
 
 """
@@ -46,7 +71,11 @@ Delta will track the time. We need to specify delta in case
 the computer processor is overloaded.
 The xSpeed and ySpeed need to be multiplied by delta. This compensates how fast 
 our processor is calculating for our game.
+
+It uses the variable moving wich is set to true when moving otherwise it's false
+and the pig doesn't move. 
 """	
 func move(xSpeed, ySpeed, delta):
 	position.x += xSpeed * delta
 	position.y += ySpeed * delta
+	moving = true
