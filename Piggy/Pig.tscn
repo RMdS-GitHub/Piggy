@@ -42,10 +42,8 @@ tracks/0/keys = {
 }
 
 [node name="Pig" type="Area2D"]
+collision_mask = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_group_": true
-}
 SPEED = 70
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -56,9 +54,9 @@ hframes = 3
 [node name="Collision" type="CollisionShape2D" parent="."]
 rotation = 1.5708
 shape = SubResource( 1 )
-disabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 0.5
 anims/Idle = SubResource( 2 )
 anims/Run = SubResource( 3 )
+[connection signal="area_entered" from="." to="." method="_on_Pig_area_entered"]

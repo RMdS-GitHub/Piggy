@@ -1,6 +1,8 @@
 """  
 This script attached to the pig object is used to get input from
 the player, and then move the pig thanks to function process.
+
+It also manages the collisions with the apples.
 """
 
 # Area2D is the parent with Sprite, Collision and AnimationPlayer.
@@ -58,6 +60,16 @@ func _process(delta: float) -> void:
 	else:
 		animationPlayer.play("Idle")
 		
+	"""
+	This variable and function is to handle multiple collisions.
+	It replaces the signal on area entered. It was just a way to show another
+	way how to manage the collisions.
+	"""
+	#var areas = get_overlapping_areas()
+	# Loop every element of the array and queue free the elements colliding.
+	#for area in areas:
+	#	area.queue_free()
+	
 
 """
 move(x, y, delta).
@@ -79,3 +91,16 @@ func move(xSpeed, ySpeed, delta):
 	position.x += xSpeed * delta
 	position.y += ySpeed * delta
 	moving = true
+
+
+"""
+Function signal on pig for the collisions. When it collides with area, other 
+than the pig it will delete it from the scene.
+Once the pig touches an apple it will scale up.
+If the color of the collision shape is white oon the world scene, it means that
+it's disabled...it will not work.
+"""
+func _on_Pig_area_entered(area: Area2D) -> void:
+	area.queue_free()
+	scale *= 1.1
+	
